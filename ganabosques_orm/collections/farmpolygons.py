@@ -1,15 +1,14 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField
-from typing import Optional
-
+from mongoengine import Document, StringField, ObjectIdField, ReferenceField, FloatField, IntField
+from ganabosques_orm.collections.farm import Farm
 
 class FarmPolygons(Document):
     """Auto-generated MongoDB collection: FarmPolygons"""
     meta = {'collection': 'farmpolygons'}
     id = ObjectIdField(primary_key=True)
-    farm_id = ObjectIdField(primary_key=True)
+    farm_id = ReferenceField(Farm)
     geojson = StringField()
-    latitude = StringField()
-    longitud = StringField()
-    animals_amount = StringField()
-    buffer_size = StringField()
-    field_capacity = StringField()
+    latitude = FloatField()
+    longitud = FloatField()
+    animals_amount = IntField()
+    buffer_size = FloatField()
+    field_capacity = FloatField()

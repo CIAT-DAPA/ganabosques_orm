@@ -1,5 +1,4 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField
-from typing import Optional
+from mongoengine import Document, StringField, ObjectIdField, EmbeddedDocumentField
 from ganabosques_orm.auxiliaries.log import Log
 
 class ProtectedAreas(Document):

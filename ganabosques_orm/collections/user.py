@@ -1,6 +1,4 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField
-from typing import Optional
-
+from mongoengine import Document, StringField, ObjectIdField
 
 class User(Document):
     """Auto-generated MongoDB collection: User"""

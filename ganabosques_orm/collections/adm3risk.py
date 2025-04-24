@@ -1,13 +1,14 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField
-from typing import Optional
+from mongoengine import Document, ObjectIdField, ReferenceField, FloatField, IntField
+from ganabosques_orm.collections.adm3 import Adm3
+from ganabosques_orm.collections.analysis import Analysis
 
 
 class Adm3Risk(Document):
     """Auto-generated MongoDB collection: Adm3Risk"""
     meta = {'collection': 'adm3risk'}
     id = ObjectIdField(primary_key=True)
-    adm3_id = ObjectIdField(primary_key=True)
-    analysis_id = ObjectIdField(primary_key=True)
-    def_ha = StringField()
-    farm_amount = StringField()
-    risk_total = StringField()
+    adm3_id = ReferenceField(Adm3)
+    analysis_id = ReferenceField(Analysis)
+    def_ha = FloatField()
+    farm_amount = IntField()
+    risk_total = FloatField()

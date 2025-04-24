@@ -1,4 +1,4 @@
-from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField
+from mongoengine import EmbeddedDocument, BooleanField, DateTimeField
 
 class Log(EmbeddedDocument):
     """Auto-generated auxiliary: Log"""

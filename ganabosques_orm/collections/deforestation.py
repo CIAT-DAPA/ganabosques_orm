@@ -1,5 +1,4 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField, EnumField, IntField
-from typing import Optional
+from mongoengine import Document, StringField, ObjectIdField, EmbeddedDocumentField, EnumField, IntField
 from ganabosques_orm.auxiliaries.log import Log
 from ganabosques_orm.enums.deforestationtype import DeforestationType
 from ganabosques_orm.enums.deforestationsource import DeforestationSource

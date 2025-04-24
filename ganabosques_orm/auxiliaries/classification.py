@@ -1,4 +1,4 @@
-from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField
+from mongoengine import EmbeddedDocument, StringField
 
 class Classification(EmbeddedDocument):
     """Auto-generated auxiliary: Classification"""

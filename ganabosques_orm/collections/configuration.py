@@ -1,13 +1,11 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField
-from typing import Optional
+from mongoengine import Document, StringField, ObjectIdField, EmbeddedDocumentField, EmbeddedDocumentListField
 from ganabosques_orm.auxiliaries.log import Log
+from ganabosques_orm.auxiliaries.parameters import Parameters
 
 class Configuration(Document):
     """Auto-generated MongoDB collection: Configuration"""
     meta = {'collection': 'configuration'}
     id = ObjectIdField(primary_key=True)
-    parameters = StringField()
-    log = EmbeddedDocumentField(Log)
-    id = ObjectIdField(primary_key=True)
-    parameters = StringField()
+    name = StringField()
+    parameters = EmbeddedDocumentListField(Parameters)
     log = EmbeddedDocumentField(Log)

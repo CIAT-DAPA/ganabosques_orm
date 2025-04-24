@@ -1,4 +1,4 @@
-from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField, FloatField
+from mongoengine import EmbeddedDocument, FloatField
 
 class Attributes(EmbeddedDocument):
     """Auto-generated auxiliary: Attributes"""

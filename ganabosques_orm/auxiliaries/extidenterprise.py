@@ -1,4 +1,4 @@
-from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField, EnumField
+from mongoengine import EmbeddedDocument, StringField, EnumField
 from ganabosques_orm.enums.label import Label
 
 class ExtIdEnterprise(EmbeddedDocument):

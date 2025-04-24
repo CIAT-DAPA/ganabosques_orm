@@ -1,4 +1,4 @@
-from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField, EnumField
+from mongoengine import EmbeddedDocument, BooleanField, EnumField
 from ganabosques_orm.enums.criteriaenum import CriteriaEnum
 
 class Criteria(EmbeddedDocument):
