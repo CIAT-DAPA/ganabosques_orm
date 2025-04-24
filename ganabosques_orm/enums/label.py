@@ -1,0 +1,6 @@
+from enum import Enum
+
+class Label(Enum):
+    """Auto-generated enum: Label"""
+    ORIGINPRODUCTIONUNIT_ID = "ORIGINPRODUCTIONUNIT_ID"
+    DESTINATIONPRODUCTIONUNIT_ID = "DESTINATIONPRODUCTIONUNIT_ID"
