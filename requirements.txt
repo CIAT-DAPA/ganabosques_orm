@@ -1,0 +1,7 @@
+dnspython==2.7.0
+mongoengine==0.29.1
+mongomock==4.3.0
+packaging==25.0
+pymongo==4.12.0
+pytz==2025.2
+sentinels==1.0.0
