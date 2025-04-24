@@ -58,7 +58,3 @@ ganabosques_orm/
 ├── base.py           # MongoDB initialization using environment variables
 └── tests/            # Unit tests
 ```
-
-## License
-
-MIT
