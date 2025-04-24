@@ -1,12 +1,14 @@
 import unittest
 from mongoengine import connect, disconnect
 from ganabosques_orm.collections.user import User
+import mongomock
 
 class TestUser(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        connect('mongoenginetest', host='mongomock://localhost')
+        #connect('mongoenginetest', host='mongomock://localhost')
+        connect(db='mongoenginetest',host='mongodb://localhost',mongo_client_class=mongomock.MongoClient)
 
     @classmethod
     def tearDownClass(cls):

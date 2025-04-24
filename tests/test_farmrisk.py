@@ -1,12 +1,14 @@
 import unittest
 from mongoengine import connect, disconnect
 from ganabosques_orm.collections.farmrisk import FarmRisk
+import mongomock
 
 class TestFarmRisk(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        connect('mongoenginetest', host='mongomock://localhost')
+        #connect('mongoenginetest', host='mongomock://localhost')
+        connect(db='mongoenginetest',host='mongodb://localhost',mongo_client_class=mongomock.MongoClient)
 
     @classmethod
     def tearDownClass(cls):
