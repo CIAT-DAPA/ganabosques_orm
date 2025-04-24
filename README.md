@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-pip install .
+pip install . 
 ```
 
 ## Usage
