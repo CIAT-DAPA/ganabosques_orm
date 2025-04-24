@@ -1,13 +1,12 @@
 # Ganabosques ORM
 
-**Ganabosques ORM** is a Python package built with [MongoEngine](https://mongoengine.org/) to manage the data models of the Ganabosques monitoring and reporting system.
+**Ganabosques ORM** is a Python package built with [MongoEngine](https://docs.mongoengine.org/) to manage the data models of the Ganabosques system.
 
 ## Features
 
 - MongoDB collections modeled using `mongoengine.Document`.
 - Embedded data structures (`EmbeddedDocument`) for auxiliary data.
 - Enums for standard values.
-- Ready to use with any MongoDB backend.
 - Includes unit tests with `unittest` and `mongomock`.
 
 ## Installation
