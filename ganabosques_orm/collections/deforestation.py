@@ -1,15 +1,17 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField
+from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField, EnumField, IntField
 from typing import Optional
 from ganabosques_orm.auxiliaries.log import Log
+from ganabosques_orm.enums.deforestationtype import DeforestationType
+from ganabosques_orm.enums.deforestationsource import DeforestationSource
 
 class Deforestation(Document):
     """Auto-generated MongoDB collection: Deforestation"""
     meta = {'collection': 'deforestation'}
     id = ObjectIdField(primary_key=True)
-    deforestation_source = StringField()
-    deforestation_type = StringField()
+    deforestation_source = EnumField(DeforestationSource)
+    deforestation_type = EnumField(DeforestationType)
     name = StringField()
-    year_start = StringField()
-    year_end = StringField()
+    year_start = IntField()
+    year_end = IntField()
     path = StringField()
     log = EmbeddedDocumentField(Log)

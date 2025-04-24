@@ -1,6 +1,7 @@
-from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField
+from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField, EnumField
+from ganabosques_orm.enums.source import Source
 
 class ExtIdFarm(EmbeddedDocument):
     """Auto-generated auxiliary: ExtIdFarm"""
-    source = StringField()
+    source = EnumField(Source)
     ext_code = StringField()

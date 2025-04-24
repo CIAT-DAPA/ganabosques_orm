@@ -1,5 +1,6 @@
-from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentField
+from mongoengine import Document, StringField, ObjectIdField, BooleanField, DateTimeField, EmbeddedDocumentListField, FloatField
 from typing import Optional
+from ganabosques_orm.auxiliaries.criteria import Criteria
 
 
 class EnterpriseRisk(Document):
@@ -7,6 +8,6 @@ class EnterpriseRisk(Document):
     meta = {'collection': 'enterpriserisk'}
     id = ObjectIdField(primary_key=True)
     enterprise_id = ObjectIdField(primary_key=True)
-    farmRisk_id = ObjectIdField(primary_key=True)
-    criteria = StringField()
-    risk_total = StringField()
+    farm_risk_id = ObjectIdField(primary_key=True)
+    criteria = EmbeddedDocumentListField(Criteria)
+    risk_total = FloatField()

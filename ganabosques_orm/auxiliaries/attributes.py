@@ -1,7 +1,7 @@
-from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField
+from mongoengine import EmbeddedDocument, StringField, ObjectIdField, BooleanField, DateTimeField, FloatField
 
 class Attributes(EmbeddedDocument):
     """Auto-generated auxiliary: Attributes"""
-    def_prop = StringField()
-    def_ha = StringField()
-    def_distance = StringField()
+    def_prop = FloatField()
+    def_ha = FloatField()
+    def_distance = FloatField()
