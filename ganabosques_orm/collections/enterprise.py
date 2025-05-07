@@ -3,6 +3,7 @@ from ganabosques_orm.enums.typeenterprise import TypeEnterprise
 from ganabosques_orm.auxiliaries.log import Log
 from ganabosques_orm.auxiliaries.extidenterprise import ExtIdEnterprise
 from ganabosques_orm.collections.adm2 import Adm2
+from ganabosques_orm.tools.exceptiondata import ExceptionData
 
 class Enterprise(Document):
     """Auto-generated MongoDB collection: Enterprise"""
@@ -15,3 +16,9 @@ class Enterprise(Document):
     latitude = FloatField()
     longitud = FloatField()
     log = EmbeddedDocumentField(Log)
+
+    def validate(self):
+        if not self.name or self.name.strip() == "":
+            raise ExceptionData("Name field is mandatory")
+
+        return True
