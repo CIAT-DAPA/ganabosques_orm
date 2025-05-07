@@ -20,5 +20,8 @@ class Enterprise(Document):
     def validate(self):
         if not self.name or self.name.strip() == "":
             raise ExceptionData("Name field is mandatory")
+        
+        if not self.type_enterprise:
+            raise ExceptionData("Type Enterprise field is mandatory", attribute="type_enterprise")
 
         return True
