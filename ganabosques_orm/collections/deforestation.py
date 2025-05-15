@@ -6,7 +6,6 @@ from ganabosques_orm.enums.deforestationsource import DeforestationSource
 class Deforestation(Document):
     """Auto-generated MongoDB collection: Deforestation"""
     meta = {'collection': 'deforestation'}
-    id = ObjectIdField(primary_key=True)
     deforestation_source = EnumField(DeforestationSource)
     deforestation_type = EnumField(DeforestationType)
     name = StringField()

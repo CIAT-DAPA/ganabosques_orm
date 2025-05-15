@@ -8,7 +8,6 @@ from ganabosques_orm.tools.exceptiondata import ExceptionData
 class Farm(Document):
     """Auto-generated MongoDB collection: Farm"""
     meta = {'collection': 'farm'}
-    id = ObjectIdField(primary_key=True)
     adm3_id = ReferenceField(Adm3)
     ext_id = EmbeddedDocumentListField(ExtIdFarm)
     farm_source = EnumField(FarmSource)
