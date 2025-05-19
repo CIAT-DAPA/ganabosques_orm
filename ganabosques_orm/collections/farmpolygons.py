@@ -4,7 +4,6 @@ from ganabosques_orm.collections.farm import Farm
 class FarmPolygons(Document):
     """Auto-generated MongoDB collection: FarmPolygons"""
     meta = {'collection': 'farmpolygons'}
-    id = ObjectIdField(primary_key=True)
     farm_id = ReferenceField(Farm)
     geojson = StringField()
     latitude = FloatField()
