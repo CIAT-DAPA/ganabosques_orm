@@ -9,7 +9,6 @@ from ganabosques_orm.auxiliaries.years import Years
 class Suppliers(Document):
     """Auto-generated MongoDB collection: Suppliers"""
     meta = {'collection': 'suppliers'}
-    id = ObjectIdField(primary_key=True)
     enterprise_id = ReferenceField(Enterprise)
     farm_id = ReferenceField(Farm)
     years = EmbeddedDocumentListField(Years)
