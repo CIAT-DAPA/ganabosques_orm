@@ -4,6 +4,7 @@ from ganabosques_orm.collections.movement import Movement
 import mongomock
 from datetime import datetime
 from ganabosques_orm.enums.typemovement import TypeMovement
+from ganabosques_orm.enums.species import Species
 from ganabosques_orm.tools.exceptiondata import ExceptionData
 
 class TestMovement(unittest.TestCase):
@@ -27,7 +28,8 @@ class TestMovement(unittest.TestCase):
         movement = Movement(
             date=datetime.utcnow(),
             type_origin=TypeMovement.FARM,
-            type_destination=TypeMovement.ENTERPRISE
+            type_destination=TypeMovement.ENTERPRISE,
+            species=Species.BOVINOS
         )
         self.assertTrue(movement.validate())
 
@@ -60,3 +62,14 @@ class TestMovement(unittest.TestCase):
         with self.assertRaises(ExceptionData) as context:
             movement.validate()
         self.assertEqual(str(context.exception), "Type destination field is mandatory")
+
+    def test_missing_species(self):
+        # Verifica que se lanza excepción si falta el especie
+        movement = Movement(
+            date=datetime.utcnow(),
+            type_origin=TypeMovement.FARM,
+            type_destination=TypeMovement.ENTERPRISE
+        )
+        with self.assertRaises(ExceptionData) as context:
+            movement.validate()
+        self.assertEqual(str(context.exception), "Species field is mandatory")
