@@ -6,7 +6,8 @@ setup(
     description="ORM package for Ganabosques project using MongoEngine",
     author="Steven Sotelo",
     author_email="h.sotelo@cgiar.org",
-    packages=find_packages(),
+    packages=find_packages('ganabosques_orm'),
+    package_dir={'': 'ganabosques_orm'},
     install_requires=[
         "mongoengine>=0.27.0"
     ],
