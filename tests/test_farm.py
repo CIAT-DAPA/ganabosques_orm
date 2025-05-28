@@ -50,7 +50,7 @@ class TestFarm(unittest.TestCase):
     def test_missing_farm_source(self):
         # Check that missing farm_source raises an exception
         adm3 = Adm3(id="ADM3-002")
-        ext_id = ExtIdFarm(source=Source.ORIGINPRODUCER_ID, ext_code="456")
+        ext_id = ExtIdFarm(source=Source.PRODUCER_ID, ext_code="456")
 
         farm = Farm(
             adm3_id=adm3,
