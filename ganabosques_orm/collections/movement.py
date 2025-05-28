@@ -5,6 +5,7 @@ from ganabosques_orm.auxiliaries.classification import Classification
 from ganabosques_orm.collections.farm import Farm
 from ganabosques_orm.collections.enterprise import Enterprise
 from ganabosques_orm.tools.exceptiondata import ExceptionData
+from ganabosques_orm.enums.species import Species
 
 class Movement(Document):
     """Auto-generated MongoDB collection: Movement"""
@@ -20,7 +21,7 @@ class Movement(Document):
     enterprise_id_origin = ReferenceField(Enterprise)
     enterprise_id_destination = ReferenceField(Enterprise)
     movement = EmbeddedDocumentListField(Classification)
-    species = StringField()
+    species = EnumField(Species)
 
     def validate(self):
         # Verify that the required fields are present before saving.
@@ -32,5 +33,8 @@ class Movement(Document):
 
         if self.type_destination is None:
             raise ExceptionData("Type destination field is mandatory", attribute="type_destination")
+        
+        if self.species is None:
+            raise ExceptionData("Species field is mandatory", attribute="species")
 
         return True
