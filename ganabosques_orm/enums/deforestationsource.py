@@ -2,4 +2,4 @@ from enum import Enum
 
 class DeforestationSource(Enum):
     """Auto-generated enum: DeforestationSource"""
-    SMBYC = "SMBYC"
+    SMBYC = "smbyc"

@@ -1,6 +1,7 @@
 from mongoengine import Document, StringField, ReferenceField, FloatField, IntField, EmbeddedDocumentField
 from ganabosques_orm.collections.farm import Farm
 from ganabosques_orm.auxiliaries.bufferpolygon import BufferPolygon
+from ganabosques_orm.auxiliaries.log import Log
 
 class FarmPolygons(Document):
     """Auto-generated MongoDB collection: FarmPolygons"""
@@ -12,3 +13,4 @@ class FarmPolygons(Document):
     farm_ha = FloatField()
     radio = FloatField()
     buffer_inputs = EmbeddedDocumentField(BufferPolygon)
+    log = EmbeddedDocumentField(Log)    
