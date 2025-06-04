@@ -13,7 +13,7 @@ class Farm(Document):
     farm_source = EnumField(FarmSource)
     log = EmbeddedDocumentField(Log)
 
-    def validate(self):
+    def validate(self, clean=True):
         # Validación: adm3_id is mandatory
         if not self.adm3_id:
             raise ExceptionData("adm3_id is required", attribute="adm3_id")
