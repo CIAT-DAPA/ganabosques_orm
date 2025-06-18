@@ -23,7 +23,7 @@ class Movement(Document):
     movement = EmbeddedDocumentListField(Classification)
     species = EnumField(Species)
 
-    def validate(self):
+    def validate(self, clean=True):
         # Verify that the required fields are present before saving.
         if self.date is None:
             raise ExceptionData("Date field is mandatory", attribute="date")

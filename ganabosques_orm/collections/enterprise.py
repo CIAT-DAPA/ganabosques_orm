@@ -16,7 +16,7 @@ class Enterprise(Document):
     longitud = FloatField()
     log = EmbeddedDocumentField(Log)
 
-    def validate(self):
+    def validate(self, clean=True):
         if not self.name or self.name.strip() == "":
             raise ExceptionData("Name field is mandatory")
         
