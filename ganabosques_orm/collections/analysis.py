@@ -7,7 +7,6 @@ from ganabosques_orm.collections.deforestation import Deforestation
 class Analysis(Document):
     """Auto-generated MongoDB collection: Analysis"""
     meta = {'collection': 'analysis'}
-    id = ObjectIdField(primary_key=True)
     protected_areas_id = ReferenceField(ProtectedAreas)
     farming_areas_id = ReferenceField(FarmingAreas)
     deforestation_id = ReferenceField(Deforestation)

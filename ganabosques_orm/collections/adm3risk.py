@@ -6,7 +6,6 @@ from ganabosques_orm.collections.analysis import Analysis
 class Adm3Risk(Document):
     """Auto-generated MongoDB collection: Adm3Risk"""
     meta = {'collection': 'adm3risk'}
-    id = ObjectIdField(primary_key=True)
     adm3_id = ReferenceField(Adm3)
     analysis_id = ReferenceField(Analysis)
     def_ha = FloatField()
