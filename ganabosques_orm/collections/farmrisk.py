@@ -6,7 +6,6 @@ from ganabosques_orm.collections.farmpolygons import FarmPolygons
 class FarmRisk(Document):
     """Auto-generated MongoDB collection: FarmRisk"""
     meta = {'collection': 'farmrisk'}
-    id = ObjectIdField(primary_key=True)
     farm_id = ReferenceField(Farm)
     farm_polygons_id = ReferenceField(FarmPolygons)
     deforestation = EmbeddedDocumentField(Attributes)
