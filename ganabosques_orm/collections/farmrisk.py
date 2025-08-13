@@ -1,4 +1,4 @@
-from mongoengine import Document, ObjectIdField, EmbeddedDocumentField, FloatField, ReferenceField
+from mongoengine import Document, ObjectIdField, EmbeddedDocumentField, FloatField, ReferenceField, BooleanField
 from ganabosques_orm.auxiliaries.attributes import Attributes
 from ganabosques_orm.collections.farm import Farm
 from ganabosques_orm.collections.farmpolygons import FarmPolygons
@@ -13,6 +13,7 @@ class FarmRisk(Document):
     farm_polygons_id = ReferenceField(FarmPolygons)
     deforestation = EmbeddedDocumentField(Attributes)
     protected = EmbeddedDocumentField(Attributes)
+    farming = BooleanField()
     risk_direct = FloatField()
     risk_input = FloatField()
     risk_output = FloatField()
