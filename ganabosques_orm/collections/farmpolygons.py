@@ -1,14 +1,16 @@
-from mongoengine import Document, StringField, ObjectIdField, ReferenceField, FloatField, IntField
+from mongoengine import Document, StringField, ReferenceField, FloatField, IntField, EmbeddedDocumentField, EmbeddedDocumentListField
 from ganabosques_orm.collections.farm import Farm
+from ganabosques_orm.auxiliaries.bufferpolygon import BufferPolygon
+from ganabosques_orm.auxiliaries.log import Log
 
 class FarmPolygons(Document):
     """Auto-generated MongoDB collection: FarmPolygons"""
     meta = {'collection': 'farmpolygons'}
-    id = ObjectIdField(primary_key=True)
     farm_id = ReferenceField(Farm)
     geojson = StringField()
     latitude = FloatField()
     longitud = FloatField()
-    animals_amount = IntField()
-    buffer_size = FloatField()
-    field_capacity = FloatField()
+    farm_ha = FloatField()
+    radio = FloatField()
+    buffer_inputs = EmbeddedDocumentListField(BufferPolygon)
+    log = EmbeddedDocumentField(Log)    

@@ -5,7 +5,6 @@ from ganabosques_orm.collections.adm2 import Adm2
 class Adm3(Document):
     """Auto-generated MongoDB collection: Adm3"""
     meta = {'collection': 'adm3'}
-    id = ObjectIdField(primary_key=True)
     adm2_id = ReferenceField(Adm2)
     name = StringField()
     ext_id = StringField()
