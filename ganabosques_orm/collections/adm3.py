@@ -8,4 +8,5 @@ class Adm3(Document):
     adm2_id = ReferenceField(Adm2)
     name = StringField()
     ext_id = StringField()
+    label = StringField()
     log = EmbeddedDocumentField(Log)
