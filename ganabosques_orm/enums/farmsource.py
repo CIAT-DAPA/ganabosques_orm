@@ -5,3 +5,4 @@ class FarmSource(Enum):
     GEOFARMER = "GEOFARMER"
     SAGARI = "SAGARI"
     SINIGAN = "SINIGAN"
+    SIGMA = "SIGMA"

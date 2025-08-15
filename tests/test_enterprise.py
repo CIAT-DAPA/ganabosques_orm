@@ -20,7 +20,7 @@ class TestEnterprise(unittest.TestCase):
     def test_create_instance(self):
         instance = Enterprise()
         self.assertIsInstance(instance, Enterprise)
-    
+
     # Test para validar nombre correcto (con type_enterprise válido)
     def test_name_validate(self):
         enterprise = Enterprise(name="Mi empresa", type_enterprise=TypeEnterprise.ENTERPRISE)
