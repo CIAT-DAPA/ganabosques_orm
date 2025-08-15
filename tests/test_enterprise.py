@@ -19,7 +19,7 @@ class TestEnterprise(unittest.TestCase):
     def test_create_instance(self):
         instance = Enterprise()
         self.assertIsInstance(instance, Enterprise)
-    
+
     def test_name_validate(self):
         enterprise = Enterprise(name="Mi empresa")
         self.assertTrue(enterprise.validate())
