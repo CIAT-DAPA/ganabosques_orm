@@ -1,4 +1,4 @@
-from mongoengine import Document, ObjectIdField, ReferenceField, FloatField, IntField
+from mongoengine import Document, ObjectIdField, ReferenceField, FloatField, IntField, BooleanField
 from ganabosques_orm.collections.adm3 import Adm3
 from ganabosques_orm.collections.analysis import Analysis
 
@@ -10,4 +10,4 @@ class Adm3Risk(Document):
     analysis_id = ReferenceField(Analysis)
     def_ha = FloatField()
     farm_amount = IntField()
-    risk_total = FloatField()
+    risk_total = BooleanField()
