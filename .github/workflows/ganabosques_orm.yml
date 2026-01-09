@@ -126,10 +126,9 @@ jobs:
 
     - name: Update version
       run: |
-        # new_tag viene como vX.Y.Z, para version de python debe ser X.Y.Z
         NEW_TAG="${{ steps.taggerDryRun.outputs.new_tag }}"
         NEW_VER="${NEW_TAG#v}"
-        sed -i "s/version='.*'/version='${NEW_VER}'/" setup.py
+        sed -i 's/version="[^"]*"/version="'"${NEW_VER}"'"/' setup.py
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
