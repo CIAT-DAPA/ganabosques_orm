@@ -74,7 +74,7 @@ jobs:
           node-version: 18
     # API Zip
     - name: Zip artifact for deployment
-      run: zip releaseApi.zip ./src/* -r
+      run: zip -r releaseApi.zip ganabosques_orm
     # Upload Artifacts
     - name: Upload Api artifact for deployment job
       uses: actions/upload-artifact@v4
