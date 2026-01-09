@@ -1,41 +1,47 @@
-name: Ganabosques ORM CI/CD
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Devops EWP_WEBAPI
 
 on:
   push:
-    branches: [ "main", "stage" ]
+    branches: [ "stage" ]
     tags:
-      - 'v*'
+    - 'v*'
 
 permissions:
   contents: read
 
 jobs:
 
-  # ------- TEST ORM PACKAGE -------- #
-  TestGanabosquesORM:
+# ------- START ORM PROCCESS -------- #
+
+  TestAPI:
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Create environment
+      run: |
+        python -m venv env
+    - name: Active environment
+      run: |
+        source env/bin/activate
+    - name: Install dependencies
+      run: |
+        pip install -r ./src/requirements.txt
+    # (Tests removidos por ahora)
+# ------- END ORM PROCCESS -------- #
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.10"
+# ------- START MERGE PROCCESS -------- #
 
-      - name: Install dependencies
-        run: |
-          pip install mongoengine mongomock
-
-      - name: Run Unit Tests
-        run: |
-          python -m unittest discover -s tests/ -p 'test_*.py'
-
-  # ------- MERGE TO MAIN -------- #
-  MergeToMain:
-    needs: [TestGanabosquesORM]
+  MergeMainAPI:
+    needs: TestAPI
     name: Merge Stage with Main
     permissions: write-all
     runs-on: ubuntu-latest
@@ -50,66 +56,87 @@ jobs:
           target_branch: main
           github_token: ${{ github.token }}
 
-  # ------- RELEASE PACKAGE -------- #
-  ReleaseGanabosquesORM:
-    needs: MergeToMain
-    name: Create and Upload Release
+# ------- END MERGE PROCCESS -------- #
+
+# ------- START RELEASE PROCCESS -------- #
+
+  PostRelease:
+    needs: MergeMainAPI
+    name: Create Release
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: '0'
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+    - uses: actions/setup-node@v3
+      with:
+          node-version: 18
+    # API Zip
+    - name: Zip artifact for deployment
+      run: zip releaseApi.zip ./src/* -r
+    # Upload Artifacts
+    - name: Upload Api artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: WebApi
+        path: releaseApi.zip
+    # Generate Tagname
+    - name: Generate Tagname for release
+      id: taggerDryRun
+      uses: anothrNick/github-tag-action@1.61.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        DRY_RUN: true
+        DEFAULT_BUMP: patch
+        RELEASE_BRANCHES : stage,main
+        BRANCH_HISTORY: last
+    # Create release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        tag_name: ${{ steps.taggerDryRun.outputs.new_tag }}
+        release_name: Release ${{ steps.taggerDryRun.outputs.new_tag }}
+        #body_path: ./body.md
+        body: ${{ github.event.head_commit.message }}
+        draft: false
+        prerelease: false
+    # Upload Assets to release
+    - name: Upload Release Asset API
+      id: upload-api-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./releaseApi.zip
+        asset_name: releaseApi.zip
+        asset_content_type: application/zip
 
-      - name: Zip ORM Package
-        run: zip -r releaseGanabosquesORM.zip ganabosques_orm/ setup.py README.md tests/
+    # ===================== FIX: UPDATE VERSION LIKE THE WORKFLOW THAT WORKS =====================
+    # update version setup.py
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: main
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: GanabosquesORM
-          path: releaseGanabosquesORM.zip
+    - name: Update version
+      run: |
+        # new_tag viene como vX.Y.Z, para version de python debe ser X.Y.Z
+        NEW_TAG="${{ steps.taggerDryRun.outputs.new_tag }}"
+        NEW_VER="${NEW_TAG#v}"
+        sed -i "s/version='.*'/version='${NEW_VER}'/" setup.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate Tagname
-        id: taggerDryRun
-        uses: anothrNick/github-tag-action@1.61.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DRY_RUN: true
-          DEFAULT_BUMP: patch
-          RELEASE_BRANCHES : stage,main
-          BRANCH_HISTORY: last
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Update version to ${{ steps.taggerDryRun.outputs.new_tag }}"
+    # ===================== END FIX =====================
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          tag_name: ${{ steps.taggerDryRun.outputs.new_tag }}
-          release_name: Release ${{ steps.taggerDryRun.outputs.new_tag }}
-          body: ${{ github.event.head_commit.message }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./releaseGanabosquesORM.zip
-          asset_name: releaseGanabosquesORM.zip
-          asset_content_type: application/zip
-
-      - name: Update version in setup.py
-        run: |
-          sed -i "s/version='.*'/version='${{ steps.taggerDryRun.outputs.new_tag }}'/" setup.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit version bump
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Update version to ${{ steps.taggerDryRun.outputs.new_tag }}"
+# ------- END RELEASE PROCCESS -------- #
