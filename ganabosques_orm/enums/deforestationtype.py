@@ -5,4 +5,4 @@ class DeforestationType(Enum):
     ANNUAL = "annual"
     CUMULATIVE = "cumulative"
     WARNING="warning"
-    QARTERLY="quarter"
+    QUARTERLY="quarter"
