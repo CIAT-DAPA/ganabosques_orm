@@ -4,6 +4,8 @@ from ganabosques_orm.auxiliaries.log import Log
 from ganabosques_orm.auxiliaries.extidfarm import ExtIdFarm
 from ganabosques_orm.collections.adm3 import Adm3
 from ganabosques_orm.tools.exceptiondata import ExceptionData 
+from ganabosques_orm.enums.valuechain import ValueChain
+
 
 class Farm(Document):
     """Auto-generated MongoDB collection: Farm"""
@@ -12,6 +14,7 @@ class Farm(Document):
     ext_id = EmbeddedDocumentListField(ExtIdFarm)
     farm_source = EnumField(FarmSource)
     log = EmbeddedDocumentField(Log)
+    value_chain = EnumField(ValueChain)
 
     def validate(self, clean=True):
         # Validación: adm3_id is mandatory

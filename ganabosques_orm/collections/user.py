@@ -1,9 +1,10 @@
-from mongoengine import Document, StringField, ObjectIdField
-
+from mongoengine import Document, StringField, ObjectIdField, BooleanField, ListField, ReferenceField
+from ganabosques_orm.collections.role import Role
 class User(Document):
     """Auto-generated MongoDB collection: User"""
     meta = {'collection': 'user'}
-    id = ObjectIdField(primary_key=True)
-    email = StringField()
-    string = StringField()
-    role = StringField()
+    ext_id = StringField()
+    admin = BooleanField()
+    role = ListField(ReferenceField(Role))
+
+    
