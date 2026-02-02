@@ -5,7 +5,7 @@ class Actions(Enum):
     FRONT_ENTERPRISE = "front_enterprise"
     FRONT_ADM = "front_adm"
     FRONT_REPORT = "front_report"
-    FRONT_FARMs = "front_farms"
+    FRONT_FARMS = "front_farms"
     API_FARMS="api_farms"
     API_ENTERPRISE="api_enterprise"
     API_ADM="api_adm"
