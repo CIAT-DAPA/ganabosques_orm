@@ -2,7 +2,6 @@ from mongoengine import Document, ObjectIdField, DateTimeField, ReferenceField, 
 from ganabosques_orm.collections.protectedareas import ProtectedAreas
 from ganabosques_orm.collections.farmingareas import FarmingAreas
 from ganabosques_orm.collections.deforestation import Deforestation
-from ganabosques_orm.auxiliaries.typeanalysis import TypeAnalysis
 from ganabosques_orm.enums.valuechain import ValueChain
 
 class Analysis(Document):
