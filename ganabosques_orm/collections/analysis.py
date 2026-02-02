@@ -13,5 +13,4 @@ class Analysis(Document):
     deforestation_id = ReferenceField(Deforestation)
     user_id = ObjectIdField()
     date = DateTimeField()
-    type_analysis = EmbeddedDocumentField(TypeAnalysis)
     value_chain = EnumField(ValueChain)
