@@ -4,5 +4,5 @@ class DeforestationType(Enum):
     """Auto-generated enum:  DeforestationType"""
     ANNUAL = "annual"
     CUMULATIVE = "cumulative"
-    WARNING="warning"
-    QUARTERLY="quarter"
+    ATD="atd"
+    NAD="nad"
