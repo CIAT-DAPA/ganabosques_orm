@@ -3,6 +3,7 @@ from ganabosques_orm.auxiliaries.attributes import Attributes
 from ganabosques_orm.collections.farm import Farm
 from ganabosques_orm.collections.farmpolygons import FarmPolygons
 from ganabosques_orm.collections.analysis import Analysis
+from ganabosques_orm.collections.Verification import VerificationEntity
 
 
 class FarmRisk(Document):
@@ -18,3 +19,4 @@ class FarmRisk(Document):
     risk_direct = BooleanField()
     risk_input = BooleanField()
     risk_output = BooleanField()
+    verification_entity = ReferenceField(VerificationEntity)
