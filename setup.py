@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="ganabosques_orm",
-    version="0.0.28",
+    version="0.0.29",
     description="ORM package for Ganabosques project using MongoEngine",
     author="Steven Sotelo",
     author_email="h.sotelo@cgiar.org",
