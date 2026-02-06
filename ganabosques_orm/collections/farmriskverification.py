@@ -1,7 +1,7 @@
 from mongoengine import Document, ObjectIdField, ReferenceField, FloatField, IntField, BooleanField, DateTimeField, StringField
 from ganabosques_orm.collections.user import User
 from ganabosques_orm.collections.farmrisk import FarmRisk
-from ganabosques_orm.collections.Verification import VerificationEntity
+from ganabosques_orm.collections.verification import Entity
 
 
 class FarmRiskVerification(Document):
@@ -9,6 +9,6 @@ class FarmRiskVerification(Document):
     meta = {'collection': 'farmriskverification'}
     user_id = ReferenceField(User)
     farmrisk = ReferenceField(FarmRisk)
-    verification_entity = ReferenceField(VerificationEntity)
     verification = DateTimeField()
     observation = StringField()
+    status = BooleanField()
