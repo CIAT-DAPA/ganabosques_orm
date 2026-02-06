@@ -3,7 +3,7 @@ from ganabosques_orm.auxiliaries.attributes import Attributes
 from ganabosques_orm.collections.farm import Farm
 from ganabosques_orm.collections.farmpolygons import FarmPolygons
 from ganabosques_orm.collections.analysis import Analysis
-from ganabosques_orm.collections.farmriskverification import FarmRiskVerification
+
 
 class FarmRisk(Document):
     """Auto-generated MongoDB collection: FarmRisk"""
@@ -18,4 +18,3 @@ class FarmRisk(Document):
     risk_direct = BooleanField()
     risk_input = BooleanField()
     risk_output = BooleanField()
-    verification = ReferenceField(FarmRiskVerification)
