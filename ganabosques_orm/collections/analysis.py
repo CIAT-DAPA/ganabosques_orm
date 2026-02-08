@@ -5,6 +5,7 @@ from ganabosques_orm.collections.deforestation import Deforestation
 from ganabosques_orm.auxiliaries.typeanalysis import TypeAnalysis
 from ganabosques_orm.enums.valuechain import ValueChain
 
+
 class Analysis(Document):
     """Auto-generated MongoDB collection: Analysis"""
     meta = {'collection': 'analysis'}
