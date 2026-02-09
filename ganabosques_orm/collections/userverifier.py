@@ -1,7 +1,7 @@
 from mongoengine import Document, StringField, ObjectIdField, BooleanField, ListField, ReferenceField, DateTimeField
 from ganabosques_orm.collections.role import Role
 from ganabosques_orm.collections.user import User
-from ganabosques_orm.collections.verification import Entity
+from ganabosques_orm.collections.entity import Entity
 
 class UserVerifier(Document):
     """Auto-generated MongoDB collection: UserVerifier"""
