@@ -8,6 +8,6 @@ class Role(Document):
 
     name = StringField()
 
-    actions = ListField(EmbeddedDocumentField(Actions))
+    actions = ListField(EnumField(Actions))
 
     options = ListField(EnumField(Options))
