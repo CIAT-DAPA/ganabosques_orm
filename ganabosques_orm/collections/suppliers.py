@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, ObjectIdField, ReferenceField,EmbeddedDocumentField, EmbeddedDocumentListField
+from mongoengine import Document, StringField, ObjectIdField, ReferenceField,EmbeddedDocumentField, EmbeddedDocumentListField, ListField
 from ganabosques_orm.collections.farm import Farm
 from ganabosques_orm.collections.enterprise import Enterprise
 from ganabosques_orm.auxiliaries.log import Log
@@ -11,5 +11,5 @@ class Suppliers(Document):
     meta = {'collection': 'suppliers'}
     enterprise_id = ReferenceField(Enterprise)
     farm_id = ReferenceField(Farm)
-    years = EmbeddedDocumentListField(Years)
+    years = ListField()
     log = EmbeddedDocumentField(Log)
