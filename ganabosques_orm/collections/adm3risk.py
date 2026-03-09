@@ -11,3 +11,4 @@ class Adm3Risk(Document):
     def_ha = FloatField()
     farm_amount = IntField()
     risk_total = BooleanField()
+    farm_total_amount = IntField()
