@@ -1,8 +1,13 @@
-from mongoengine import Document, StringField, ObjectIdField
+from mongoengine import Document, StringField, ListField, EmbeddedDocumentField, EnumField
+from ganabosques_orm.enums.actions import Actions
+from ganabosques_orm.enums.options import Options
+
 
 class Role(Document):
-    """Auto-generated MongoDB collection: Role"""
     meta = {'collection': 'role'}
+
     name = StringField()
-    descr = StringField()
-    permi = StringField()
+
+    actions = ListField(EnumField(Actions))
+
+    options = ListField(EnumField(Options))

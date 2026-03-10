@@ -4,7 +4,7 @@ from ganabosques_orm.auxiliaries.log import Log
 from ganabosques_orm.auxiliaries.extidenterprise import ExtIdEnterprise
 from ganabosques_orm.collections.adm2 import Adm2
 from ganabosques_orm.tools.exceptiondata import ExceptionData
-
+from ganabosques_orm.enums.valuechain import ValueChain
 class Enterprise(Document):
     """Auto-generated MongoDB collection: Enterprise"""
     meta = {'collection': 'enterprise'}
@@ -15,6 +15,7 @@ class Enterprise(Document):
     latitude = FloatField()
     longitud = FloatField()
     log = EmbeddedDocumentField(Log)
+    value_chain = EnumField(ValueChain)
 
     def validate(self, clean=True):
         if not self.name or self.name.strip() == "":
