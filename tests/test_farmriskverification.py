@@ -1,6 +1,5 @@
 import unittest
 from datetime import datetime
-from bson import ObjectId
 
 import mongomock
 from mongoengine import connect, disconnect
@@ -10,13 +9,13 @@ from ganabosques_orm.collections.adm2 import Adm2
 from ganabosques_orm.collections.adm3 import Adm3
 from ganabosques_orm.collections.farm import Farm
 from ganabosques_orm.collections.farmpolygons import FarmPolygons
+from ganabosques_orm.collections.analysis import Analysis
 from ganabosques_orm.collections.protectedareas import ProtectedAreas
 from ganabosques_orm.collections.farmingareas import FarmingAreas
 from ganabosques_orm.collections.deforestation import Deforestation
-from ganabosques_orm.collections.analysis import Analysis
-from ganabosques_orm.collections.enterprise import Enterprise
 from ganabosques_orm.collections.farmrisk import FarmRisk
-from ganabosques_orm.collections.enterpriserisk import EnterpriseRisk
+from ganabosques_orm.collections.farmriskverification import FarmRiskVerification
+from ganabosques_orm.collections.user import User
 
 from ganabosques_orm.auxiliaries.attributes import Attributes
 from ganabosques_orm.auxiliaries.bufferpolygon import BufferPolygon
@@ -24,13 +23,12 @@ from ganabosques_orm.auxiliaries.extidfarm import ExtIdFarm
 from ganabosques_orm.auxiliaries.typeanalysis import TypeAnalysis
 
 from ganabosques_orm.enums.farmsource import FarmSource
-from ganabosques_orm.enums.typeenterprise import TypeEnterprise
 from ganabosques_orm.enums.valuechain import ValueChain
 from ganabosques_orm.enums.deforestationtype import DeforestationType
 from ganabosques_orm.enums.deforestationsource import DeforestationSource
 
 
-class TestEnterpriseRisk(unittest.TestCase):
+class TestFarmRiskVerification(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -45,24 +43,21 @@ class TestEnterpriseRisk(unittest.TestCase):
         disconnect()
 
     def tearDown(self):
-        EnterpriseRisk.drop_collection()
+        FarmRiskVerification.drop_collection()
         FarmRisk.drop_collection()
         FarmPolygons.drop_collection()
         Farm.drop_collection()
-        Enterprise.drop_collection()
         Analysis.drop_collection()
         Deforestation.drop_collection()
         FarmingAreas.drop_collection()
         ProtectedAreas.drop_collection()
+        User.drop_collection()
         Adm3.drop_collection()
         Adm2.drop_collection()
         Adm1.drop_collection()
 
     def _get_farm_source(self):
         return list(FarmSource)[0]
-
-    def _get_type_enterprise(self):
-        return list(TypeEnterprise)[0]
 
     def _get_value_chain(self):
         return list(ValueChain)[0]
@@ -72,6 +67,11 @@ class TestEnterpriseRisk(unittest.TestCase):
 
     def _get_deforestation_type(self):
         return list(DeforestationType)[0]
+
+    def _create_user(self):
+        user = User()
+        user.save()
+        return user
 
     def _create_adm3(self):
         adm1 = Adm1(
@@ -147,22 +147,12 @@ class TestEnterpriseRisk(unittest.TestCase):
             protected_areas_id=protected_area,
             farming_areas_id=farming_area,
             deforestation_id=deforestation,
-            user_id=ObjectId(),
-            date=datetime(2024, 6, 1, 8, 30, 0),
             type_analysis=TypeAnalysis(),
             value_chain=self._get_value_chain()
         )
         analysis.save()
 
         return analysis
-
-    def _create_enterprise(self):
-        enterprise = Enterprise(
-            name='Empresa Demo',
-            type_enterprise=self._get_type_enterprise()
-        )
-        enterprise.save()
-        return enterprise
 
     def _create_farm_risk(self):
         farm = self._create_farm()
@@ -185,141 +175,112 @@ class TestEnterpriseRisk(unittest.TestCase):
         return farm_risk
 
     def test_create_instance(self):
-        instance = EnterpriseRisk()
-        self.assertIsInstance(instance, EnterpriseRisk)
+        instance = FarmRiskVerification()
+        self.assertIsInstance(instance, FarmRiskVerification)
 
-    def test_collection_name_is_enterpriserisk(self):
-        self.assertEqual(EnterpriseRisk._get_collection_name(), 'enterpriserisk')
+    def test_collection_name_is_farmriskverification(self):
+        self.assertEqual(
+            FarmRiskVerification._get_collection_name(),
+            'farmriskverification'
+        )
 
     def test_create_instance_with_valid_data(self):
-        enterprise = self._create_enterprise()
-        analysis = self._create_analysis()
-        farm_risk_1 = self._create_farm_risk()
-        farm_risk_2 = self._create_farm_risk()
+        user = self._create_user()
+        farm_risk = self._create_farm_risk()
+        verification_date = datetime(2024, 7, 1, 9, 30, 0)
 
-        instance = EnterpriseRisk(
-            enterprise_id=enterprise,
-            analysis_id=analysis,
-            risk_input=[farm_risk_1],
-            risk_output=[farm_risk_2]
+        instance = FarmRiskVerification(
+            user_id=user,
+            farmrisk=farm_risk,
+            verification=verification_date,
+            observation='Riesgo revisado manualmente',
+            status=True
         )
 
-        self.assertEqual(instance.enterprise_id, enterprise)
-        self.assertEqual(instance.analysis_id, analysis)
-        self.assertEqual(len(instance.risk_input), 1)
-        self.assertEqual(len(instance.risk_output), 1)
-        self.assertEqual(instance.risk_input[0], farm_risk_1)
-        self.assertEqual(instance.risk_output[0], farm_risk_2)
+        self.assertEqual(instance.user_id, user)
+        self.assertEqual(instance.farmrisk, farm_risk)
+        self.assertEqual(instance.verification, verification_date)
+        self.assertEqual(instance.observation, 'Riesgo revisado manualmente')
+        self.assertTrue(instance.status)
 
     def test_save_instance_with_valid_data(self):
-        enterprise = self._create_enterprise()
-        analysis = self._create_analysis()
-        farm_risk_1 = self._create_farm_risk()
-        farm_risk_2 = self._create_farm_risk()
+        user = self._create_user()
+        farm_risk = self._create_farm_risk()
+        verification_date = datetime(2024, 8, 15, 14, 0, 0)
 
-        instance = EnterpriseRisk(
-            enterprise_id=enterprise,
-            analysis_id=analysis,
-            risk_input=[farm_risk_1],
-            risk_output=[farm_risk_2]
+        instance = FarmRiskVerification(
+            user_id=user,
+            farmrisk=farm_risk,
+            verification=verification_date,
+            observation='Verificacion aprobada',
+            status=False
         )
         instance.save()
 
-        saved = EnterpriseRisk.objects(id=instance.id).first()
+        saved = FarmRiskVerification.objects(id=instance.id).first()
 
         self.assertIsNotNone(saved)
-        self.assertEqual(saved.enterprise_id.id, enterprise.id)
-        self.assertEqual(saved.analysis_id.id, analysis.id)
-        self.assertEqual(len(saved.risk_input), 1)
-        self.assertEqual(len(saved.risk_output), 1)
-        self.assertEqual(saved.risk_input[0].id, farm_risk_1.id)
-        self.assertEqual(saved.risk_output[0].id, farm_risk_2.id)
+        self.assertEqual(saved.user_id.id, user.id)
+        self.assertEqual(saved.farmrisk.id, farm_risk.id)
+        self.assertEqual(saved.verification, verification_date)
+        self.assertEqual(saved.observation, 'Verificacion aprobada')
+        self.assertFalse(saved.status)
 
     def test_save_instance_with_empty_fields(self):
-        instance = EnterpriseRisk()
+        instance = FarmRiskVerification()
         instance.save()
 
-        saved = EnterpriseRisk.objects(id=instance.id).first()
+        saved = FarmRiskVerification.objects(id=instance.id).first()
 
         self.assertIsNotNone(saved)
-        self.assertIsNone(saved.enterprise_id)
-        self.assertIsNone(saved.analysis_id)
-        self.assertEqual(saved.risk_input, [])
-        self.assertEqual(saved.risk_output, [])
-
-    def test_save_instance_with_multiple_farm_risks_in_lists(self):
-        enterprise = self._create_enterprise()
-        analysis = self._create_analysis()
-        farm_risk_1 = self._create_farm_risk()
-        farm_risk_2 = self._create_farm_risk()
-        farm_risk_3 = self._create_farm_risk()
-
-        instance = EnterpriseRisk(
-            enterprise_id=enterprise,
-            analysis_id=analysis,
-            risk_input=[farm_risk_1, farm_risk_2],
-            risk_output=[farm_risk_2, farm_risk_3]
-        )
-        instance.save()
-
-        saved = EnterpriseRisk.objects(id=instance.id).first()
-
-        self.assertIsNotNone(saved)
-        self.assertEqual(len(saved.risk_input), 2)
-        self.assertEqual(len(saved.risk_output), 2)
-        self.assertEqual(saved.risk_input[0].id, farm_risk_1.id)
-        self.assertEqual(saved.risk_input[1].id, farm_risk_2.id)
-        self.assertEqual(saved.risk_output[0].id, farm_risk_2.id)
-        self.assertEqual(saved.risk_output[1].id, farm_risk_3.id)
+        self.assertIsNone(saved.user_id)
+        self.assertIsNone(saved.farmrisk)
+        self.assertIsNone(saved.verification)
+        self.assertIsNone(saved.observation)
+        self.assertIsNone(saved.status)
 
     def test_update_persisted_instance(self):
-        enterprise = self._create_enterprise()
-        analysis = self._create_analysis()
-        farm_risk_1 = self._create_farm_risk()
-        farm_risk_2 = self._create_farm_risk()
-        farm_risk_3 = self._create_farm_risk()
+        user = self._create_user()
+        farm_risk = self._create_farm_risk()
 
-        instance = EnterpriseRisk(
-            enterprise_id=enterprise,
-            analysis_id=analysis,
-            risk_input=[farm_risk_1],
-            risk_output=[farm_risk_2]
+        instance = FarmRiskVerification(
+            user_id=user,
+            farmrisk=farm_risk,
+            verification=datetime(2024, 1, 10, 8, 0, 0),
+            observation='Observacion inicial',
+            status=False
         )
         instance.save()
 
-        instance.risk_input = [farm_risk_1, farm_risk_3]
-        instance.risk_output = [farm_risk_2, farm_risk_3]
+        new_verification = datetime(2024, 2, 20, 16, 45, 0)
+        instance.verification = new_verification
+        instance.observation = 'Observacion actualizada'
+        instance.status = True
         instance.save()
 
-        updated = EnterpriseRisk.objects(id=instance.id).first()
+        updated = FarmRiskVerification.objects(id=instance.id).first()
 
         self.assertIsNotNone(updated)
-        self.assertEqual(updated.enterprise_id.id, enterprise.id)
-        self.assertEqual(updated.analysis_id.id, analysis.id)
-        self.assertEqual(len(updated.risk_input), 2)
-        self.assertEqual(len(updated.risk_output), 2)
-        self.assertEqual(updated.risk_input[0].id, farm_risk_1.id)
-        self.assertEqual(updated.risk_input[1].id, farm_risk_3.id)
-        self.assertEqual(updated.risk_output[0].id, farm_risk_2.id)
-        self.assertEqual(updated.risk_output[1].id, farm_risk_3.id)
+        self.assertEqual(updated.user_id.id, user.id)
+        self.assertEqual(updated.farmrisk.id, farm_risk.id)
+        self.assertEqual(updated.verification, new_verification)
+        self.assertEqual(updated.observation, 'Observacion actualizada')
+        self.assertTrue(updated.status)
 
     def test_delete_instance(self):
-        enterprise = self._create_enterprise()
-        analysis = self._create_analysis()
-        farm_risk = self._create_farm_risk()
-
-        instance = EnterpriseRisk(
-            enterprise_id=enterprise,
-            analysis_id=analysis,
-            risk_input=[farm_risk],
-            risk_output=[farm_risk]
+        instance = FarmRiskVerification(
+            user_id=self._create_user(),
+            farmrisk=self._create_farm_risk(),
+            verification=datetime(2024, 3, 5, 11, 0, 0),
+            observation='Registro a eliminar',
+            status=True
         )
         instance.save()
         instance_id = instance.id
 
         instance.delete()
 
-        deleted = EnterpriseRisk.objects(id=instance_id).first()
+        deleted = FarmRiskVerification.objects(id=instance_id).first()
         self.assertIsNone(deleted)
 
 

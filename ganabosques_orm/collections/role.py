@@ -1,6 +1,11 @@
-from mongoengine import Document, StringField, ListField, EmbeddedDocumentField, EnumField
+from mongoengine import Document, EmbeddedDocument, StringField, ListField, EmbeddedDocumentField, EnumField
 from ganabosques_orm.enums.actions import Actions
 from ganabosques_orm.enums.options import Options
+
+
+class ActionPermission(EmbeddedDocument):
+    action = EnumField(Actions, required=True)
+    options = ListField(EnumField(Options))
 
 
 class Role(Document):
@@ -8,6 +13,4 @@ class Role(Document):
 
     name = StringField()
 
-    actions = ListField(EnumField(Actions))
-
-    options = ListField(EnumField(Options))
+    actions = ListField(EmbeddedDocumentField(ActionPermission))
