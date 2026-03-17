@@ -1,9 +1,13 @@
 import unittest
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import mongomock
 from mongoengine import connect, disconnect, ValidationError
 
-from ganabosques_orm.collections.role import Role
+from ganabosques_orm.collections.role import Role, ActionPermission
 from ganabosques_orm.enums.actions import Actions
 from ganabosques_orm.enums.options import Options
 
@@ -25,19 +29,21 @@ class TestRole(unittest.TestCase):
     def tearDown(self):
         Role.drop_collection()
 
-    def _get_action(self):
-        return list(Actions)[0]
+    def _make_permission(self, action=None, options=None):
+        """Helper: crea un ActionPermission con valores por defecto."""
+        return ActionPermission(
+            action=action or list(Actions)[0],
+            options=options or [Options.READ]
+        )
 
-    def _get_second_action(self):
+    def _make_second_permission(self):
+        """Helper: crea un segundo ActionPermission distinto."""
         actions = list(Actions)
-        return actions[1] if len(actions) > 1 else actions[0]
-
-    def _get_option(self):
-        return list(Options)[0]
-
-    def _get_second_option(self):
-        options = list(Options)
-        return options[1] if len(options) > 1 else options[0]
+        second_action = actions[1] if len(actions) > 1 else actions[0]
+        return ActionPermission(
+            action=second_action,
+            options=[Options.CREATE, Options.UPDATE]
+        )
 
     def test_create_instance(self):
         instance = Role()
@@ -47,21 +53,22 @@ class TestRole(unittest.TestCase):
         self.assertEqual(Role._get_collection_name(), 'role')
 
     def test_create_instance_with_valid_data(self):
+        perm = self._make_permission()
         instance = Role(
             name='Administrador',
-            actions=[self._get_action()],
-            options=[self._get_option()]
+            actions=[perm]
         )
 
         self.assertEqual(instance.name, 'Administrador')
-        self.assertEqual(instance.actions, [self._get_action()])
-        self.assertEqual(instance.options, [self._get_option()])
+        self.assertEqual(len(instance.actions), 1)
+        self.assertEqual(instance.actions[0].action, perm.action)
+        self.assertEqual(instance.actions[0].options, perm.options)
 
     def test_save_instance_with_valid_data(self):
+        perm = self._make_permission()
         instance = Role(
             name='Supervisor',
-            actions=[self._get_action()],
-            options=[self._get_option()]
+            actions=[perm]
         )
         instance.save()
 
@@ -69,14 +76,16 @@ class TestRole(unittest.TestCase):
 
         self.assertIsNotNone(saved)
         self.assertEqual(saved.name, 'Supervisor')
-        self.assertEqual(saved.actions, [self._get_action()])
-        self.assertEqual(saved.options, [self._get_option()])
+        self.assertEqual(len(saved.actions), 1)
+        self.assertEqual(saved.actions[0].action, perm.action)
+        self.assertEqual(saved.actions[0].options, perm.options)
 
-    def test_save_instance_with_multiple_actions_and_options(self):
+    def test_save_instance_with_multiple_actions(self):
+        perm1 = self._make_permission()
+        perm2 = self._make_second_permission()
         instance = Role(
             name='Operador',
-            actions=[self._get_action(), self._get_second_action()],
-            options=[self._get_option(), self._get_second_option()]
+            actions=[perm1, perm2]
         )
         instance.save()
 
@@ -84,11 +93,10 @@ class TestRole(unittest.TestCase):
 
         self.assertIsNotNone(saved)
         self.assertEqual(len(saved.actions), 2)
-        self.assertEqual(len(saved.options), 2)
-        self.assertEqual(saved.actions[0], self._get_action())
-        self.assertEqual(saved.actions[1], self._get_second_action())
-        self.assertEqual(saved.options[0], self._get_option())
-        self.assertEqual(saved.options[1], self._get_second_option())
+        self.assertEqual(saved.actions[0].action, perm1.action)
+        self.assertEqual(saved.actions[0].options, perm1.options)
+        self.assertEqual(saved.actions[1].action, perm2.action)
+        self.assertEqual(saved.actions[1].options, perm2.options)
 
     def test_save_instance_with_empty_fields(self):
         instance = Role()
@@ -99,13 +107,11 @@ class TestRole(unittest.TestCase):
         self.assertIsNotNone(saved)
         self.assertIsNone(saved.name)
         self.assertEqual(saved.actions, [])
-        self.assertEqual(saved.options, [])
 
-    def test_save_instance_with_empty_actions_and_options_lists(self):
+    def test_save_instance_with_empty_actions_list(self):
         instance = Role(
             name='Consulta',
-            actions=[],
-            options=[]
+            actions=[]
         )
         instance.save()
 
@@ -114,31 +120,43 @@ class TestRole(unittest.TestCase):
         self.assertIsNotNone(saved)
         self.assertEqual(saved.name, 'Consulta')
         self.assertEqual(saved.actions, [])
-        self.assertEqual(saved.options, [])
 
-    def test_validate_invalid_action_value_raises_validation_error(self):
-        instance = Role(actions=['invalid_action'])
-
-        with self.assertRaises(ValidationError):
-            instance.validate()
-
-    def test_validate_invalid_option_value_raises_validation_error(self):
-        instance = Role(options=['invalid_option'])
-
-        with self.assertRaises(ValidationError):
-            instance.validate()
-
-    def test_update_persisted_instance(self):
+    def test_each_action_has_its_own_options(self):
+        """Verifica que cada action guarda sus propias options independientemente."""
+        perm_farms = ActionPermission(
+            action=Actions.FRONT_FARMS,
+            options=[Options.READ, Options.UPDATE]
+        )
+        perm_enterprise = ActionPermission(
+            action=Actions.FRONT_ENTERPRISE,
+            options=[Options.CREATE, Options.READ, Options.UPDATE, Options.DELETE]
+        )
         instance = Role(
-            name='Rol Base',
-            actions=[self._get_action()],
-            options=[self._get_option()]
+            name='Mixto',
+            actions=[perm_farms, perm_enterprise]
         )
         instance.save()
 
+        saved = Role.objects(id=instance.id).first()
+
+        self.assertEqual(len(saved.actions[0].options), 2)
+        self.assertEqual(len(saved.actions[1].options), 4)
+        self.assertIn(Options.READ, saved.actions[0].options)
+        self.assertIn(Options.UPDATE, saved.actions[0].options)
+        self.assertNotIn(Options.DELETE, saved.actions[0].options)
+        self.assertIn(Options.DELETE, saved.actions[1].options)
+
+    def test_update_persisted_instance(self):
+        perm1 = self._make_permission()
+        instance = Role(
+            name='Rol Base',
+            actions=[perm1]
+        )
+        instance.save()
+
+        perm2 = self._make_second_permission()
         instance.name = 'Rol Actualizado'
-        instance.actions = [self._get_action(), self._get_second_action()]
-        instance.options = [self._get_option(), self._get_second_option()]
+        instance.actions = [perm1, perm2]
         instance.save()
 
         updated = Role.objects(id=instance.id).first()
@@ -146,17 +164,12 @@ class TestRole(unittest.TestCase):
         self.assertIsNotNone(updated)
         self.assertEqual(updated.name, 'Rol Actualizado')
         self.assertEqual(len(updated.actions), 2)
-        self.assertEqual(len(updated.options), 2)
-        self.assertEqual(updated.actions[0], self._get_action())
-        self.assertEqual(updated.actions[1], self._get_second_action())
-        self.assertEqual(updated.options[0], self._get_option())
-        self.assertEqual(updated.options[1], self._get_second_option())
 
     def test_delete_instance(self):
+        perm = self._make_permission()
         instance = Role(
             name='Rol a Eliminar',
-            actions=[self._get_action()],
-            options=[self._get_option()]
+            actions=[perm]
         )
         instance.save()
         instance_id = instance.id

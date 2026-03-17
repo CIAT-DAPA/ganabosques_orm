@@ -6,7 +6,7 @@ from mongoengine import connect, disconnect
 
 from ganabosques_orm.collections.userverifier import UserVerifier
 from ganabosques_orm.collections.user import User
-from ganabosques_orm.collections.role import Role
+from ganabosques_orm.collections.role import Role, ActionPermission
 from ganabosques_orm.collections.entity import Entity
 from ganabosques_orm.enums.actions import Actions
 from ganabosques_orm.enums.options import Options
@@ -32,17 +32,15 @@ class TestUserVerifier(unittest.TestCase):
         Role.drop_collection()
         Entity.drop_collection()
 
-    def _get_action(self):
-        return list(Actions)[0]
-
-    def _get_option(self):
-        return list(Options)[0]
-
     def _create_role(self, name='Rol Base'):
         role = Role(
             name=name,
-            actions=[self._get_action()],
-            options=[self._get_option()]
+            actions=[
+                ActionPermission(
+                    action=list(Actions)[0],
+                    options=[Options.READ]
+                )
+            ]
         )
         role.save()
         return role
