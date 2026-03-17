@@ -4,11 +4,11 @@ from datetime import datetime
 import mongomock
 from mongoengine import connect, disconnect
 
-from ganabosques_orm.collections.farmingareas import FarmingAreas
+from ganabosques_orm.collections.sourcemovement import SourceMovement
 from ganabosques_orm.auxiliaries.log import Log
 
 
-class TestFarmingAreas(unittest.TestCase):
+class TestSourceMovement(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -23,37 +23,33 @@ class TestFarmingAreas(unittest.TestCase):
         disconnect()
 
     def tearDown(self):
-        FarmingAreas.drop_collection()
+        SourceMovement.drop_collection()
 
     def test_create_instance(self):
-        instance = FarmingAreas()
-        self.assertIsInstance(instance, FarmingAreas)
+        instance = SourceMovement()
+        self.assertIsInstance(instance, SourceMovement)
 
-    def test_collection_name_is_farmingareas(self):
-        self.assertEqual(FarmingAreas._get_collection_name(), 'farmingareas')
+    def test_collection_name_is_sourcemovement(self):
+        self.assertEqual(SourceMovement._get_collection_name(), 'sourcemovement')
 
     def test_create_instance_with_valid_data(self):
-        instance = FarmingAreas(
-            name='Area Norte',
-            path='/tmp/areas/area_norte.geojson'
+        instance = SourceMovement(
+            name='ICA'
         )
 
-        self.assertEqual(instance.name, 'Area Norte')
-        self.assertEqual(instance.path, '/tmp/areas/area_norte.geojson')
+        self.assertEqual(instance.name, 'ICA')
         self.assertIsNone(instance.log)
 
     def test_save_instance_with_valid_data(self):
-        instance = FarmingAreas(
-            name='Area Centro',
-            path='/data/farming/centro.shp'
+        instance = SourceMovement(
+            name='SIPSA'
         )
         instance.save()
 
-        saved = FarmingAreas.objects(id=instance.id).first()
+        saved = SourceMovement.objects(id=instance.id).first()
 
         self.assertIsNotNone(saved)
-        self.assertEqual(saved.name, 'Area Centro')
-        self.assertEqual(saved.path, '/data/farming/centro.shp')
+        self.assertEqual(saved.name, 'SIPSA')
         self.assertIsNone(saved.log)
 
     def test_save_instance_with_log_embedded_document(self):
@@ -63,64 +59,59 @@ class TestFarmingAreas(unittest.TestCase):
             updated=datetime(2024, 1, 2, 12, 0, 0)
         )
 
-        instance = FarmingAreas(
-            name='Area Sur',
-            path='/data/farming/sur.kml',
+        instance = SourceMovement(
+            name='FEDEGAN',
             log=log
         )
         instance.save()
 
-        saved = FarmingAreas.objects(id=instance.id).first()
+        saved = SourceMovement.objects(id=instance.id).first()
 
         self.assertIsNotNone(saved)
+        self.assertEqual(saved.name, 'FEDEGAN')
         self.assertIsInstance(saved.log, Log)
         self.assertTrue(saved.log.enable)
         self.assertEqual(saved.log.created, datetime(2024, 1, 1, 10, 0, 0))
         self.assertEqual(saved.log.updated, datetime(2024, 1, 2, 12, 0, 0))
 
     def test_save_instance_with_empty_fields(self):
-        instance = FarmingAreas()
+        instance = SourceMovement()
         instance.save()
 
-        saved = FarmingAreas.objects(id=instance.id).first()
+        saved = SourceMovement.objects(id=instance.id).first()
 
         self.assertIsNotNone(saved)
         self.assertIsNone(saved.name)
-        self.assertIsNone(saved.path)
         self.assertIsNone(saved.log)
 
     def test_create_instance_with_invalid_log_type_raises_value_error(self):
         with self.assertRaises(ValueError):
-            FarmingAreas(log='invalid_log')
+            SourceMovement(log='invalid_log')
 
     def test_update_persisted_instance(self):
-        instance = FarmingAreas(
-            name='Area Occidente',
-            path='/data/farming/occidente.geojson'
+        instance = SourceMovement(
+            name='Origen Inicial'
         )
         instance.save()
 
-        instance.name = 'Area Occidente Actualizada'
-        instance.path = '/data/farming/occidente_v2.geojson'
+        instance.name = 'Origen Actualizado'
         instance.save()
 
-        updated = FarmingAreas.objects(id=instance.id).first()
+        updated = SourceMovement.objects(id=instance.id).first()
 
         self.assertIsNotNone(updated)
-        self.assertEqual(updated.name, 'Area Occidente Actualizada')
-        self.assertEqual(updated.path, '/data/farming/occidente_v2.geojson')
+        self.assertEqual(updated.name, 'Origen Actualizado')
 
     def test_delete_instance(self):
-        instance = FarmingAreas(
-            name='Area Oriente',
-            path='/data/farming/oriente.geojson'
+        instance = SourceMovement(
+            name='Origen a Eliminar'
         )
         instance.save()
         instance_id = instance.id
 
         instance.delete()
 
-        deleted = FarmingAreas.objects(id=instance_id).first()
+        deleted = SourceMovement.objects(id=instance_id).first()
         self.assertIsNone(deleted)
 
 
