@@ -35,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r ./requirements.txt
-    # (Tests removidos por ahora)
+        python -m unittest discover tests
 # ------- END ORM PROCCESS -------- #
 
 # ------- START MERGE PROCCESS -------- #
